@@ -6,6 +6,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ServiciuScriereGeneric {
+    private static ServiciuScriereGeneric ssg;
+    private ServiciuScriereGeneric() {}
+    public static ServiciuScriereGeneric getServiciuScriereGeneric() {
+        if (ssg == null)
+            ssg = new ServiciuScriereGeneric();
+        return ssg;
+    }
     public <T, S> void scriereGenerica(T t, S s) {
         String path = "";
         String text = "";
