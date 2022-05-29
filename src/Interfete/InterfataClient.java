@@ -2,19 +2,31 @@ package Interfete;
 
 import Clase.Carte;
 import Clase.Client;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public interface InterfataClient {
-    ArrayList<Client> citireDateClientImprumut(Scanner scanner, ArrayList<Client> clImpr, ArrayList<Carte> c);
+    void creareTabelClientImprumut() throws SQLException;
 
-    ArrayList<Client> citireDateClientRetur(Scanner scanner, ArrayList<Client> clRetur, ArrayList<Client> clImpr, ArrayList<Carte> c);
+    void creareTabelClientRetur() throws SQLException;
 
-    boolean verificaNume(String numeCarte, ArrayList<Carte> c);
+    Client citireDateClientImprumut(Scanner scanner, ArrayList<Carte> c) throws SQLException;
 
-    boolean verificaDisponibilitate(String numeCarte, ArrayList<Carte> c);
+    Client citireDateClientRetur(Scanner scanner, ArrayList<Carte> c) throws SQLException;
+
+    boolean verificaNume(String numeCarte) throws SQLException;
+
+    boolean verificaDisponibilitate(String numeCarte) throws SQLException;
 
     Carte gasesteCarte(String numeCarte, ArrayList<Carte> c);
 
-    boolean  verificaDate(ArrayList<Client> clImpr, String cnp, String numeCarte);
+    boolean  verificaDate(String cnp, String numeCarte);
+
+    void updateCarte1(String numeCarte) throws SQLException;
+
+    void updateCarte2(String numeCarte) throws SQLException;
+
+    void vizualizareListe() throws  SQLException;
 }

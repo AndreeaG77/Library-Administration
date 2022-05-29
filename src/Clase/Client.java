@@ -10,6 +10,10 @@ public class Client {
     private LocalDate dataImprumutariiReturului;
     private Carte carteImprumutataReturnata;
 
+    public Client(){
+        this.cnp= "-1";
+    }
+
     public Client(String nume, String prenume, String cnp, Carte carteImprumutataReturnata){
         this.nume = nume;
         this.prenume = prenume;

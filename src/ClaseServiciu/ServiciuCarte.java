@@ -9,14 +9,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 
 public class ServiciuCarte implements InterfataCarte {
-    public void vizualizareListe(ArrayList<Client> clImpr, ArrayList<Client> clRetur){
-        System.out.println("Lista clientilor care au imprumutat carti: ");
-        clImpr.stream().forEach(cl -> System.out.println(cl.toString()));
-
-        System.out.println("Lista clientilor care au returnat carti: ");
-        clRetur.stream().forEach(cl -> System.out.println(cl.toString()));
-    }
-
     public void vizualizeazaAutori(ArrayList<Autor> aut){
         aut.stream().forEach(a -> System.out.println(a.toString()));
     }

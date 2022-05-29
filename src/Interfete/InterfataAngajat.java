@@ -1,13 +1,14 @@
 package Interfete;
 
 import Clase.Angajat;
-import java.util.ArrayList;
+
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public interface InterfataAngajat {
-    void vizualizareAngajati(ArrayList<Angajat> ang);
+    void vizualizareAngajati() throws SQLException;
 
-    ArrayList<Angajat> citireDateAngajatNou(Scanner scanner, ArrayList<Angajat> ang);
+    void citireDateAngajatNou(Scanner scanner) throws SQLException;
 
-    ArrayList<Angajat> eliminaAngajat(ArrayList<Angajat> ang, int idx);
+    void eliminaAngajat(Scanner scanner) throws  SQLException;
 }

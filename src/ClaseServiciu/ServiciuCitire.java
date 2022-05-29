@@ -4,6 +4,10 @@ import Clase.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -16,56 +20,46 @@ public class ServiciuCitire {
             sc = new ServiciuCitire();
         return sc;
     }
-    public ArrayList<Angajat> citireAngajati() throws IOException{
-        ArrayList<Angajat> ang = new ArrayList<>();
-        try {
-            String path = System.getProperty("user.dir") + "\\src\\FisiereCSV\\Angajat.txt";
-            Scanner scaner = new Scanner(new File(path));
-            scaner.useDelimiter(",");
-            Bibliotecar a1 = new Bibliotecar(scaner.next(),scaner.next(),scaner.next());
-            Bodyguard a2 = new Bodyguard(scaner.next().strip(),scaner.next(),scaner.next());
 
-            ang.add(a1);
-            ang.add(a2);
-
-            return ang;
-        } catch (IOException e) {
-            System.out.print("Eroare la citire Angajat");
-        }
-        return ang;
-    }
-
-    public ArrayList<Autor> citireAutori() throws IOException{
+    public ArrayList<Autor> citireAutori() throws SQLException{
+        Connection con = ConexiuneBD.getConexiuneBazaDate();
         ArrayList<Autor> aut = new ArrayList<>();
         try {
-            String path = System.getProperty("user.dir") + "\\src\\FisiereCSV\\Autor.txt";
-            Scanner scaner = new Scanner(new File(path));
-            scaner.useDelimiter(",");
-            while (scaner.hasNext()) {
-                Autor a = new Autor(scaner.next().strip(),scaner.next(),scaner.next(),scaner.next());
+            Statement stmt = con.createStatement();
+            String sql = "SELECT * FROM autor";
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Autor a = new Autor(rs.getString("nume"), rs.getString("prenume"), rs.getString("data_nasterii"), rs.getString("data_decesului"));
                 aut.add(a);
             }
             return aut;
-        } catch (IOException e) {
+        } catch (SQLException se) {
             System.out.print("Eroare la citire Autor");
         }
         return aut;
     }
 
-    public ArrayList<Carte> citireCarti() throws IOException{
+    public ArrayList<Carte> citireCarti() throws SQLException{
+        Connection con = ConexiuneBD.getConexiuneBazaDate();
         ArrayList<Carte> c = new ArrayList<>();
         try {
-            String path = System.getProperty("user.dir") + "\\src\\FisiereCSV\\Carte.txt";
-            Scanner scaner = new Scanner(new File(path));
-            scaner.useDelimiter(",");
-            while (scaner.hasNext()) {
-                String numeCarte = scaner.next().strip();
-                Autor a = new Autor(scaner.next(),scaner.next(),scaner.next(),scaner.next());
+            Statement stmt1 = con.createStatement();
+            String sql1 = "SELECT * FROM carte";
+            ResultSet rs1 = stmt1.executeQuery(sql1);
+
+            while (rs1.next()) {
+                Statement stmt2 = con.createStatement();
+                String n = rs1.getString("cod_autor");
+                String sql2 = "SELECT * FROM autor WHERE cod_autor=" + n;
+                ResultSet rs2 = stmt2.executeQuery(sql2);
+                rs2.next();
+                String numeCarte = rs1.getString("nume");
+                Autor a = new Autor(rs2.getString("nume"), rs2.getString("prenume"), rs2.getString("data_nasterii"), rs2.getString("data_decesului"));
                 Carte crt = new Carte(numeCarte, a);
                 c.add(crt);
             }
             return c;
-        } catch (IOException e) {
+        } catch (SQLException se) {
             System.out.print("Eroare la citire Carte");
         }
         return c;

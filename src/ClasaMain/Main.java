@@ -6,6 +6,8 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Main {
 
@@ -13,19 +15,18 @@ public class Main {
         ServiciuCitire sCitire = ServiciuCitire.getSeriviciuCitire();
         ArrayList<Autor> aut = new ArrayList<>();
         ArrayList<Carte> c = new ArrayList<>();
-        ArrayList<Angajat> ang = new ArrayList<>();
         ArrayList<Sectiune> s = new ArrayList<>();
 
         try{
             aut = sCitire.citireAutori();
 
-        } catch (IOException e) {
+        } catch (SQLException se) {
             System.out.print("Eroare la citire Autor");
         }
 
         try{
             c = sCitire.citireCarti();
-        } catch (IOException e) {
+        } catch (SQLException se) {
             System.out.print("Eroare la citire Carte");
         }
 
@@ -34,15 +35,6 @@ public class Main {
         } catch (IOException e) {
             System.out.print("Eroare la citire Sectiune");
         }
-
-        try{
-            ang = sCitire.citireAngajati();
-        } catch (IOException e) {
-            System.out.print("Eroare la citire Angajat");
-        }
-
-        ArrayList<Client> clImprumut = new ArrayList<>();
-        ArrayList<Client> clRetur = new ArrayList<>();
 
         ServiciuAngajat sa = new ServiciuAngajat();
         ServiciuCarte sc = new ServiciuCarte();
@@ -75,27 +67,40 @@ public class Main {
                         com1 = scanner.nextInt();
                         switch(com1){
                             case 1:{
-                                sa.vizualizareAngajati(ang);
-                                ssg.scriereGenerica("VIZUALIZARE ANGAJATI", null);
-                                break;
+                                try {
+                                    sa.vizualizareAngajati();
+                                    ssg.scriereGenerica("VIZUALIZARE ANGAJATI", null);
+                                    break;
+                                }catch (SQLException se){
+                                    se.printStackTrace();
+                                }
                             }
                             case 2:{
-                                ang = sa.citireDateAngajatNou(scanner, ang);
-                                ssg.scriereGenerica("AGAUGARE ANGAJAT", null);
-                                break;
+                                try {
+                                    sa.citireDateAngajatNou(scanner);
+                                    ssg.scriereGenerica("AGAUGARE ANGAJAT", null);
+                                    break;
+                                }catch(SQLException se){
+                                    System.out.println("Eroare la adaugare angajat nou la baza de date");
+                                }
                             }
                             case 3:{
-                                int l = ang.size();
-                                System.out.println("Alege un index intre 1 si " + l + " pentru a concedia angajatul cu indexul respectiv");
-                                int idx = scanner.nextInt();
-                                ang = sa.eliminaAngajat(ang, idx);
-                                ssg.scriereGenerica("CONCEDIERE ANGAJAT", null);
-                                break;
+                                try {
+                                    sa.eliminaAngajat(scanner);
+                                    ssg.scriereGenerica("CONCEDIERE ANGAJAT", null);
+                                    break;
+                                }catch (SQLException se){
+                                    se.printStackTrace();
+                                }
                             }
                             case 4:{
-                                sc.vizualizareListe(clImprumut, clRetur);
-                                ssg.scriereGenerica("VIZUALIZARE LISTA CARTI IMPRUMUTATE/RETURNATE", null);
-                                break;
+                                try {
+                                    scl.vizualizareListe();
+                                    ssg.scriereGenerica("VIZUALIZARE LISTA CARTI IMPRUMUTATE/RETURNATE", null);
+                                    break;
+                                }catch (SQLException se){
+                                    se.printStackTrace();
+                                }
                             }
                             case 10:{
                                 ok1=0;
@@ -153,15 +158,29 @@ public class Main {
                                 break;
                             }
                             case 6:{
-                                clImprumut = scl.citireDateClientImprumut(scanner, clImprumut, c);
-                                ssg.scriereGenerica("IMPRUMUTARE CARTE", null);
-                                ssg.scriereGenerica(clImprumut.get(clImprumut.size()-1), "ListaClientiImprumut.txt");
+                                Client cli = new Client();
+                                try {
+                                    cli = scl.citireDateClientImprumut(scanner, c);
+                                }catch (SQLException se){
+                                    se.printStackTrace();
+                                }
+                                if(!(cli.getCnp().equals("-1"))) {
+                                    ssg.scriereGenerica("IMPRUMUTARE CARTE", null);
+                                    ssg.scriereGenerica(cli, "ListaClientiImprumut.txt");
+                                }
                                 break;
                             }
                             case 7:{
-                                clRetur = scl.citireDateClientRetur(scanner, clRetur, clImprumut, c);
-                                ssg.scriereGenerica(clRetur.get(clRetur.size()-1), "ListaClientiRetur.txt");
-                                ssg.scriereGenerica("RETURNARE CARTE", null);
+                                Client clr = new Client();
+                                try {
+                                    clr = scl.citireDateClientRetur(scanner, c);
+                                } catch (SQLException se){
+                                    se.printStackTrace();
+                                }
+                                if(!(clr.getCnp().equals("-1"))) {
+                                    ssg.scriereGenerica(clr, "ListaClientiRetur.txt");
+                                    ssg.scriereGenerica("RETURNARE CARTE", null);
+                                }
                                 break;
                             }
                             case 10:{
@@ -187,5 +206,6 @@ public class Main {
 
             }
         }
+        ConexiuneBD.inchidereConexiuneBD();
     }
 }
