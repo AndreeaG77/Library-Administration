@@ -1,4 +1,4 @@
-# PAO-Proiect
+# Library Administration
 Proiectul implementeaza o aplicatie de gestiune a unei biblioteci.
 Obiectele folosite sunt: Client, Autor, Carte, Sectiune, Angajat, Bodyguard, Bibliotecar.
 
